@@ -9,8 +9,8 @@ Hyperactive is an API and directory of services on
 To add your Hyperboria server to the directory, run _something like_
 the following command (or the programmatic equivalent)
 
-    curl -X POST -d '{"name": "", "url": "", "protocol": "", "description": ""}' \
-    http://activity.hype/services
+    curl -6 -X POST http://activity.hype/services/new -d \
+    '{"name": "Hyperactive", "url": "http://activity.hype/services", "description": "Directory of Hyperboria services exposed as a RESTful-ish API"}'
 
 If it worked, the response will be just what you POSTed, but with a
 few key/value pairs added.  Otherwise, you'll see an error (in plain
