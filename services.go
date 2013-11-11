@@ -31,7 +31,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// Start HTTP server
-	server := SimpleHTTPServer(router, ":9090")
+	server := SimpleHTTPServer(router, ":9999")
 	log.Printf("HTTP server trying to listen on %v...\n", server.Addr)
 	if err := server.ListenAndServe(); err != nil {
 		log.Printf("HTTP listen failed: %v\n", err)
