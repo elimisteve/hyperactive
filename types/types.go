@@ -29,9 +29,11 @@ type HypeService struct {
 
 func (hs *HypeService) Save() (err error) {
 	defer func() {
-		if err != nil {
+		if err == nil {
 			fmt.Printf("%s successfully updated or saved\n", hs.URL)
+			return
 		}
+		fmt.Printf("%s failed to be updated or saved\n", hs.URL)
 	}()
 
 	if hs.Name == "" || hs.URL == "" || hs.Description == "" {
