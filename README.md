@@ -16,18 +16,18 @@ If it worked, the response will be just what you POSTed, but with a
 few key/value pairs added.  Otherwise, you'll see an error (in plain
 text, not JSON).
 
-To see the current list of Tent apps, visit
+To see the current list of services, visit
 <http://activity.hype/services> in your browser or run
 
-    curl http://activity.hype/services
+    curl -6 -g http://activity.hype/services
 
 at the command line.
 
 
-## Why did you create this directory?
+## Why did you create this project?
 
-To facilitate the programmatic discovery of new Hyperboria servers,
-and much more... soon... hopefully...
+To make it easy for Hyperboria users to see the services and activity
+on the network, and much more... soon.  Hopefully.
 
 
 ## TODO
