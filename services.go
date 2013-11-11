@@ -6,7 +6,6 @@ package main
 import (
 	"./types"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
@@ -19,17 +18,7 @@ var (
 	router = mux.NewRouter()
 )
 
-const (
-	DATABASE_NAME = "hyperactive"
-	FAKE_URL      = "http://activity.hype"
-	SECRET_KEY    = ""
-)
-
 func init() {
-	if DATABASE_NAME == "" {
-		log.Fatal("Must set DATABASE_NAME")
-	}
-
 	router.HandleFunc("/", GetIndex).Methods("GET")
 	router.HandleFunc("/services", GetServices).Methods("GET")
 	router.HandleFunc("/services/new", PostServices).Methods("POST")
@@ -94,11 +83,6 @@ func PostServices(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal JSON into TentServer var
 	if err := json.Unmarshal(body, hs); err != nil {
 		writeError(w, err)
-		return
-	}
-	// Store new HypeService
-	if hs.URL == FAKE_URL {
-		writeError(w, fmt.Errorf("Are you _sure_ that's the right URL?\n"))
 		return
 	}
 
