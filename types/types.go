@@ -27,25 +27,31 @@ type HypeService struct {
 	LastSeen   time.Time `json:"last_seen"`
 }
 
-func (hs *HypeService) Save() error {
-	if hs.Name == "" || hs.URL == "" || hs.Description == "" {
-		return fmt.Errorf("name, url, and description fields must be populated\n")
-	}
+func (hs *HypeService) Save() (err error) {
+	defer func() {
+		if err != nil {
+			fmt.Printf("%s successfully updated or saved\n", hs.URL)
+		}
+	}()
 
+	if hs.Name == "" || hs.URL == "" || hs.Description == "" {
+		err = fmt.Errorf("name, url, and description fields must be populated\n")
+		return
+	}
 	oldHS, found := hypeServices[hs.URL]
 	if !found {
-		if err := hs.populateFields(); err != nil {
-			return err
+		if err = hs.populateFields(); err != nil {
+			return
 		}
 		hypeServices[hs.URL] = hs
-		return nil
+		return
 	}
-	if err := hs.populateFields(); err != nil {
-		return err
+	if err = hs.populateFields(); err != nil {
+		return
 	}
 	hs.updateFromOld(oldHS)
 	hypeServices[hs.URL] = hs
-	return nil
+	return
 }
 
 func (hs *HypeService) populateFields() error {
