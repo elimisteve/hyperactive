@@ -74,10 +74,6 @@ func (hs *HypeService) Validate() error {
 	return nil
 }
 
-func (hs *HypeService) updateFromOld(oldHS *HypeService) {
-	// New version wins, except `CreatedBy` and `CreatedAt` fields
-}
-
 func ServicesList() ([]*HypeService, error) {
 	list := make([]*HypeService, 0, len(hypeServices))
 	for _, hs := range hypeServices {
