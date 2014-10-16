@@ -31,10 +31,10 @@ type HypeService struct {
 func (hs *HypeService) Save() (err error) {
 	defer func() {
 		if err != nil {
-			log.Printf("%s failed to be updated or saved\n", hs.URL)
+			log.Printf("Failed to add `%s` -- %#v\n", hs.URL, hs)
 			return
 		}
-		log.Printf("%s successfully updated or saved\n", hs.URL)
+		log.Printf("Successfully added `%s` -- %#v\n", hs.URL, hs)
 	}()
 
 	oldHS, found := hypeServices[hs.URL]
