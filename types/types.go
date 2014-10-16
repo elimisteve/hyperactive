@@ -102,10 +102,7 @@ func DumpDB() error {
 		return err
 	}
 
-	jsonData, err := json.Marshal(services)
-	if err != nil {
-		return err
-	}
+	jsonData, _ := json.Marshal(services)
 
 	log.Printf("DB dump:\n\n%s\n\n", jsonData)
 
