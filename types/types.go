@@ -5,6 +5,7 @@ package types
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,6 +15,12 @@ import (
 var (
 	// TODO: Replace with legit DB
 	hypeServices = map[string]*HypeService{} // map from URL to *HypeService
+)
+
+var (
+	ErrServiceDuplicate = errors.New("Service already exists; no duplicates allowed")
+	ErrServiceNotFound  = errors.New("Service entry not found")
+	ErrServiceInvalid   = errors.New("name, url, and description fields must be populated")
 )
 
 type HypeService struct {
@@ -32,8 +39,7 @@ type HypeService struct {
 
 func (hs *HypeService) Save() error {
 	if _, found := hypeServices[hs.URL]; found {
-		return fmt.Errorf("Entry for %s already exists; no duplicates allowed",
-			hs.URL)
+		return ErrDuplicateService
 	}
 
 	now := time.Now()
@@ -49,7 +55,7 @@ func (hs *HypeService) Save() error {
 func (hs *HypeService) Update() error {
 	oldHS, found := hypeServices[hs.URL]
 	if !found {
-		return fmt.Errorf("Entry for %s not found", hs.URL)
+		return ErrServiceNotFound
 	}
 
 	// Set a priori-known values
@@ -69,7 +75,7 @@ func (hs *HypeService) Update() error {
 
 func (hs *HypeService) Validate() error {
 	if hs.Name == "" || hs.URL == "" || hs.Description == "" {
-		return fmt.Errorf("name, url, and description fields must be populated")
+		return ErrServiceInvalid
 	}
 	return nil
 }
@@ -77,7 +83,7 @@ func (hs *HypeService) Validate() error {
 func GetServiceByURL(url string) (*HypeService, error) {
 	service, found := hypeServices[url]
 	if !found {
-		return nil, fmt.Errorf("Service %s not found", url)
+		return nil, ErrServiceNotFound
 	}
 	return service, nil
 }
