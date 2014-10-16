@@ -4,7 +4,9 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"time"
 )
@@ -82,4 +84,23 @@ func ServicesList() ([]*HypeService, error) {
 		list = append(list, hs)
 	}
 	return list, nil
+}
+
+func DumpDB() error {
+	services, err := ServicesList()
+	if err != nil {
+		return err
+	}
+
+	jsonData, err := json.Marshal(services)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("DB dump:\n\n%s\n\n", jsonData)
+
+	// Write JSON to disk
+
+	filename := fmt.Sprintf("hyperactive-%s.json", time.Now().Format(time.RFC3339))
+	return ioutil.WriteFile(filename, jsonData, 0644)
 }

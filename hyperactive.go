@@ -6,6 +6,8 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"runtime"
 	"time"
 
@@ -15,10 +17,24 @@ import (
 	"./types"
 )
 
-func main() {
+func init() {
 	// Use all CPU cores
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	// Dump JSON when this process is killed
+	stop := make(chan os.Signal)
+	signal.Notify(stop, os.Interrupt, os.Kill)
+	go func() {
+		log.Printf("Got this signal: %v\n", <-stop)
+		err := types.DumpDB()
+		if err != nil {
+			log.Printf("Error from DumpDB: %v\n", err)
+		}
+		os.Exit(0)
+	}()
+}
+
+func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", GetIndex).Methods("GET")
