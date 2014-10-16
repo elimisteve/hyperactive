@@ -23,11 +23,11 @@ type HypeService struct {
 	Description string `json:"description"`
 
 	// Filled in by this server
-	CreatedBy  string    `json:"created_by"`  // Read IP of original POSTer
-	ModifiedBy string    `json:"modified_by"` // Read IP of updater
-	CreatedAt  time.Time `json:"created_at"`
-	ModifiedAt time.Time `json:"modified_at"`
-	LastSeen   time.Time `json:"last_seen"`
+	CreatedBy  string     `json:"created_by"`  // Read IP of original POSTer
+	ModifiedBy string     `json:"modified_by"` // Read IP of updater
+	CreatedAt  time.Time  `json:"created_at"`
+	ModifiedAt time.Time  `json:"modified_at"`
+	LastSeen   *time.Time `json:"last_seen"`
 }
 
 func (hs *HypeService) Save() error {
