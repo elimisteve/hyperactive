@@ -71,8 +71,8 @@ func (hs *HypeService) populateFields() error {
 }
 
 func (hs *HypeService) updateFromOld(oldHS *HypeService) {
-	// New version wins, except `PostedBy` and `CreatedAt` fields
-	hs.PostedBy = oldHS.PostedBy
+	// New version wins, except `CreatedBy` and `CreatedAt` fields
+	hs.CreatedBy = oldHS.CreatedBy
 	hs.CreatedAt = oldHS.CreatedAt
 }
 
