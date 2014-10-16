@@ -74,6 +74,14 @@ func (hs *HypeService) Validate() error {
 	return nil
 }
 
+func GetServiceByURL(url string) (*HypeService, error) {
+	service, found := hypeServices[url]
+	if !found {
+		return nil, fmt.Errorf("Service %s not found", url)
+	}
+	return service, nil
+}
+
 func ServicesList() ([]*HypeService, error) {
 	list := make([]*HypeService, 0, len(hypeServices))
 	for _, hs := range hypeServices {
