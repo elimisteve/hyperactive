@@ -39,6 +39,7 @@ func main() {
 
 	router.HandleFunc("/", GetIndex).Methods("GET")
 	router.HandleFunc("/services", GetServices).Methods("GET")
+	router.HandleFunc("/services", UpdateServices).Methods("PUT")
 	router.HandleFunc("/services/new", PostServices).Methods("POST")
 
 	http.Handle("/", router)
@@ -91,6 +92,30 @@ func PostServices(w http.ResponseWriter, r *http.Request) {
 
 	// Store to DB
 	if err = hs.Save(); err != nil {
+		help.WriteError(w, err.Error(), 500)
+		return
+	}
+
+	help.WriteJSON(w, hs)
+}
+
+func UpdateServices(w http.ResponseWriter, r *http.Request) {
+	hs := &types.HypeService{}
+	err := help.ReadInto(r.Body, hs)
+	if err != nil {
+		help.WriteError(w, err.Error(), 400)
+		return
+	}
+
+	if err = hs.Validate(); err != nil {
+		help.WriteError(w, err.Error(), 400)
+		return
+	}
+
+	hs.ModifiedBy = r.RemoteAddr
+
+	// Update in DB
+	if err = hs.Update(); err != nil {
 		help.WriteError(w, err.Error(), 500)
 		return
 	}
