@@ -21,7 +21,7 @@ type HypeService struct {
 	Description string `json:"description"`
 
 	// Filled in by this server
-	PostedBy   string    `json:"posted_by"`   // Read IP of original POSTer
+	CreatedBy  string    `json:"created_by"`  // Read IP of original POSTer
 	ModifiedBy string    `json:"modified_by"` // Read IP of updater
 	CreatedAt  time.Time `json:"created_at"`
 	ModifiedAt time.Time `json:"modified_at"`
@@ -63,7 +63,7 @@ func (hs *HypeService) Validate() error {
 func (hs *HypeService) populateFields() error {
 	now := time.Now()
 	// TODO: Only populate if blank
-	hs.PostedBy = ""   // TODO: List IP of POSTer
+	hs.CreatedBy = ""  // TODO: List IP of POSTer
 	hs.ModifiedBy = "" // TODO: List IP of POSTer
 	hs.ModifiedAt = now
 	hs.CreatedAt = now
