@@ -30,29 +30,41 @@ type HypeService struct {
 	LastSeen   time.Time `json:"last_seen"`
 }
 
-func (hs *HypeService) Save() (err error) {
-	defer func() {
-		if err != nil {
-			log.Printf("Failed to add `%s` -- %#v\n", hs.URL, hs)
-			return
-		}
-		log.Printf("Successfully added `%s` -- %#v\n", hs.URL, hs)
-	}()
+func (hs *HypeService) Save() error {
+	if _, found := hypeServices[hs.URL]; found {
+		return fmt.Errorf("Entry for %s already exists; no duplicates allowed",
+			hs.URL)
+	}
 
+	now := time.Now()
+	hs.CreatedAt = now
+	hs.ModifiedAt = now
+
+	hypeServices[hs.URL] = hs
+
+	log.Printf("Successfully added `%s` -- %#v\n", hs.URL, hs)
+	return nil
+}
+
+func (hs *HypeService) Update() error {
 	oldHS, found := hypeServices[hs.URL]
 	if !found {
-		if err = hs.populateFields(); err != nil {
-			return
-		}
-		hypeServices[hs.URL] = hs
-		return
+		return fmt.Errorf("Entry for %s not found", hs.URL)
 	}
-	if err = hs.populateFields(); err != nil {
-		return
-	}
-	hs.updateFromOld(oldHS)
+
+	// Set a priori-known values
+	now := time.Now()
+	hs.ModifiedAt = now
+
+	// Retain these values from the existing *HypeService
+	hs.CreatedBy = oldHS.CreatedBy
+	hs.CreatedAt = oldHS.CreatedAt
+
+	// Overwrite the existing one
 	hypeServices[hs.URL] = hs
-	return
+
+	log.Printf("Successfully updated `%s` -- %#v\n", hs.URL, hs)
+	return nil
 }
 
 func (hs *HypeService) Validate() error {
@@ -62,20 +74,8 @@ func (hs *HypeService) Validate() error {
 	return nil
 }
 
-func (hs *HypeService) populateFields() error {
-	now := time.Now()
-	// TODO: Only populate if blank
-	hs.CreatedBy = ""  // TODO: List IP of POSTer
-	hs.ModifiedBy = "" // TODO: List IP of POSTer
-	hs.ModifiedAt = now
-	hs.CreatedAt = now
-	return nil
-}
-
 func (hs *HypeService) updateFromOld(oldHS *HypeService) {
 	// New version wins, except `CreatedBy` and `CreatedAt` fields
-	hs.CreatedBy = oldHS.CreatedBy
-	hs.CreatedAt = oldHS.CreatedAt
 }
 
 func ServicesList() ([]*HypeService, error) {
