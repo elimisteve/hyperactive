@@ -90,6 +90,9 @@ func PostServices(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	hs.CreatedBy = r.RemoteAddr
+	hs.ModifiedBy = r.RemoteAddr
+
 	// Store to DB
 	if err = hs.Save(); err != nil {
 		help.WriteError(w, err.Error(), 500)
