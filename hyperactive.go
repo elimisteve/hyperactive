@@ -4,31 +4,29 @@
 package main
 
 import (
-	"./types"
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"runtime"
 	"time"
+
+	"github.com/gorilla/mux"
+
+	"./types"
 )
 
-var (
-	router = mux.NewRouter()
-)
+func main() {
+	// Use all CPU cores
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
-func init() {
+	router := mux.NewRouter()
+
 	router.HandleFunc("/", GetIndex).Methods("GET")
 	router.HandleFunc("/services", GetServices).Methods("GET")
 	router.HandleFunc("/services/new", PostServices).Methods("POST")
 
 	http.Handle("/", router)
-}
-
-func main() {
-	// Use all CPU cores
-	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// Start HTTP server
 	server := SimpleHTTPServer(router, ":9999")
@@ -39,14 +37,13 @@ func main() {
 }
 
 func SimpleHTTPServer(handler http.Handler, host string) *http.Server {
-	server := http.Server{
+	return &http.Server{
 		Addr:           host,
 		Handler:        handler,
 		ReadTimeout:    30 * time.Second,
 		WriteTimeout:   30 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	return &server
 }
 
 func GetIndex(w http.ResponseWriter, r *http.Request) {
