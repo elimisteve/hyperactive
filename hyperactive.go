@@ -95,7 +95,11 @@ func PostServices(w http.ResponseWriter, r *http.Request) {
 
 	// Store to DB
 	if err = hs.Save(); err != nil {
-		help.WriteError(w, err.Error(), 500)
+		statusCode := 500
+		if err == types.ErrServiceDuplicate {
+			statusCode = 400
+		}
+		help.WriteError(w, err.Error(), statusCode)
 		return
 	}
 
@@ -119,7 +123,11 @@ func UpdateServices(w http.ResponseWriter, r *http.Request) {
 
 	// Update in DB
 	if err = hs.Update(); err != nil {
-		help.WriteError(w, err.Error(), 500)
+		statusCode := 500
+		if err == types.ErrServiceNotFound {
+			statusCode = 404
+		}
+		help.WriteError(w, err.Error(), statusCode)
 		return
 	}
 
