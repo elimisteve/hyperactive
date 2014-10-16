@@ -68,6 +68,11 @@ func PostServices(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = hs.Validate(); err != nil {
+		help.WriteError(w, err.Error(), 400)
+		return
+	}
+
 	// Store to DB
 	if err = hs.Save(); err != nil {
 		help.WriteError(w, err.Error(), 500)

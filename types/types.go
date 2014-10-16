@@ -37,11 +37,6 @@ func (hs *HypeService) Save() (err error) {
 		log.Printf("%s successfully updated or saved\n", hs.URL)
 	}()
 
-	if hs.Name == "" || hs.URL == "" || hs.Description == "" {
-		err = fmt.Errorf("name, url, and description fields must be populated\n")
-		return
-	}
-
 	oldHS, found := hypeServices[hs.URL]
 	if !found {
 		if err = hs.populateFields(); err != nil {
@@ -56,6 +51,13 @@ func (hs *HypeService) Save() (err error) {
 	hs.updateFromOld(oldHS)
 	hypeServices[hs.URL] = hs
 	return
+}
+
+func (hs *HypeService) Validate() error {
+	if hs.Name == "" || hs.URL == "" || hs.Description == "" {
+		return fmt.Errorf("name, url, and description fields must be populated")
+	}
+	return nil
 }
 
 func (hs *HypeService) populateFields() error {
