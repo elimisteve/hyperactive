@@ -4,13 +4,12 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"runtime"
 	"time"
 
+	"github.com/222Labs/help"
 	"github.com/gorilla/mux"
 
 	"./types"
@@ -54,53 +53,26 @@ func GetServices(w http.ResponseWriter, r *http.Request) {
 	// Grab all HypeService objects from DB
 	services, err := types.ServicesList()
 	if err != nil {
-		writeError(w, err)
+		help.WriteError(w, err.Error(), 500)
 		return
 	}
-	// Marshall all HypeService ~objects to JSON
-	jsonStr, err := json.Marshal(services)
-	if err != nil {
-		writeError(w, err)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write(jsonStr)
+
+	help.WriteJSON(w, services)
 }
 
 func PostServices(w http.ResponseWriter, r *http.Request) {
-	// Read POSTed body (should be JSON)
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		writeError(w, err)
-		return
-	}
-	defer r.Body.Close()
-
 	hs := &types.HypeService{}
-	// Unmarshal JSON into TentServer var
-	if err := json.Unmarshal(body, hs); err != nil {
-		writeError(w, err)
+	err := help.ReadInto(r.Body, hs)
+	if err != nil {
+		help.WriteError(w, err.Error(), 400)
 		return
 	}
 
 	// Store to DB
 	if err = hs.Save(); err != nil {
-		writeError(w, err)
+		help.WriteError(w, err.Error(), 500)
 		return
 	}
 
-	// Marshal to JSON and return to user
-	jsonData, err := json.Marshal(hs)
-	if err != nil {
-		writeError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write(jsonData)
-}
-
-func writeError(w http.ResponseWriter, err error) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	http.Error(w, err.Error(), 500)
+	help.WriteJSON(w, hs)
 }
