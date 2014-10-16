@@ -74,11 +74,9 @@ func (hs *HypeService) updateFromOld(oldHS *HypeService) {
 }
 
 func ServicesList() ([]*HypeService, error) {
-	list := make([]*HypeService, len(hypeServices))
-	var ndx int
+	list := make([]*HypeService, 0, len(hypeServices))
 	for _, hs := range hypeServices {
-		list[ndx] = hs
-		ndx++
+		list = append(list, hs)
 	}
 	return list, nil
 }
